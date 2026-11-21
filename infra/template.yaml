@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Starter Lambda validator for the retail data lake project
+Parameters:
+  DataBucketName:
+    Type: String
+    Description: Existing S3 bucket name (must be globally unique)
+Resources:
+  CsvValidatorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: retail-csv-validator
+      Runtime: python3.12
+      Handler: validator.lambda_handler
+      CodeUri: ../lambda/
+      Timeout: 30
+      MemorySize: 256
+      Environment:
+        Variables:
+          DATA_BUCKET: !Ref DataBucketName
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref DataBucketName
